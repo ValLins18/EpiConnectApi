@@ -1,4 +1,9 @@
+using AutoMapper;
+using EpiConnectAPI.Core.MapConfiguration;
 using EpiConnectAPI.Data;
+using EpiConnectAPI.Data.Repository.Interfaces;
+using EpiConnectAPI.Data.Repository.Implementation;
+using Microsoft.Identity.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +15,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
+
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+IMapper mapper = MapConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 var app = builder.Build();
 

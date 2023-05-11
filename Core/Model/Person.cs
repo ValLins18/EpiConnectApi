@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace EpiConnectAPI.Core.Model {
-    public abstract class Person {
+    public class Person {
 
         public int PersonId { get; set; }
         public string Name { get; set; }
@@ -13,8 +13,8 @@ namespace EpiConnectAPI.Core.Model {
         public string? ImgPath { get; set; }
 
         public int PhoneId { get; set; }
-        public Phone Phone { get; set; }
+        public virtual Phone Phone { get; set; }
         public int AddressId { get; set; }
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
     }
 }
