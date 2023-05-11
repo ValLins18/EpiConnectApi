@@ -10,8 +10,8 @@ namespace EpiConnectAPI.Core.Model {
         public IEnumerable<Alert>? Alerts { get; set; }
 
         public int? MetricsId { get; set; }
-        public virtual Metrics? Metrics { get; set; }
+        public virtual Metrics Metrics { get; set; }
         public int? EmployeeId { get; set; }
-        public virtual Employee? Employee{ get; set; }
+        public virtual Employee Employee{ get; set; }
     }
 }

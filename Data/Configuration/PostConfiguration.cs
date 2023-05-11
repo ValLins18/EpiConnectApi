@@ -9,7 +9,7 @@ namespace EpiConnectAPI.Data.Configuration {
 
             builder.HasKey(x => x.PostId);
             builder.Property(x => x.PostId).HasColumnName(nameof(Post.PostId)).ValueGeneratedOnAdd();
-            builder.Property(x => x.Salary).HasColumnName(nameof(Post.Salary));
+            builder.Property(x => x.Salary).HasColumnName(nameof(Post.Salary)).HasPrecision(10,2);
             builder.Property(x => x.DepartmentId).HasColumnName(nameof(Post.DepartmentId));
 
         }

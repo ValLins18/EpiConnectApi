@@ -12,9 +12,9 @@ namespace EpiConnectAPI.Data.Configuration {
             builder.Property(address => address.AddressId).HasColumnName(nameof(Address.AddressId)).ValueGeneratedOnAdd().IsRequired();
             builder.Property(address => address.Street).HasColumnName(nameof(Address.Street)).IsRequired();
             builder.Property(address => address.Neighborhood).HasColumnName(nameof(Address.Neighborhood)).IsRequired();
-            builder.Property(address => address.State).HasColumnName(nameof(Address.State)).IsRequired();
+            builder.Property(address => address.State).HasColumnName(nameof(Address.State)).HasMaxLength(2).IsRequired();
             builder.Property(address => address.Number).HasColumnName(nameof(Address.Number)).IsRequired();
-            builder.Property(address => address.City).HasColumnName(nameof(Address.City)).IsRequired();
+            builder.Property(address => address.City).HasColumnName(nameof(Address.City)).HasMaxLength(50).IsRequired();
         }
     }
 }

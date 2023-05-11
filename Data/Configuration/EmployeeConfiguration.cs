@@ -8,8 +8,7 @@ namespace EpiConnectAPI.Data.Configuration {
             builder.ToTable(nameof(Employee));
 
             builder.HasBaseType<Person>();
-            builder.HasKey(e => e.Id);
-            builder.Property(e => e.Id).HasColumnName("EmployeeId").ValueGeneratedOnAdd();
+            builder.Property(e => e.PersonId).HasColumnName(nameof(Person.PersonId));
             builder.Property(e => e.Name).HasColumnName(nameof(Employee.Name)).HasMaxLength(50).IsRequired();
             builder.Property(e => e.AddressId).HasColumnName(nameof(Employee.AddressId));
             builder.Property(e => e.PhoneId).HasColumnName(nameof(Employee.PhoneId));

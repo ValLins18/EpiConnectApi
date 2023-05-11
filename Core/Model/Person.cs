@@ -1,6 +1,10 @@
-﻿namespace EpiConnectAPI.Core.Model {
-    public class Person {
-        public int Id { get; set; }
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace EpiConnectAPI.Core.Model {
+    public abstract class Person {
+
+        public int PersonId { get; set; }
         public string Name { get; set; }
         public string Document { get; set; }
         public DateTime BirthDate { get; set; }
