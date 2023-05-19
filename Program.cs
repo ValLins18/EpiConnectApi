@@ -17,11 +17,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IEpiRepository, EpiRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 IMapper mapper = MapConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -30,7 +40,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAnyOrigin");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

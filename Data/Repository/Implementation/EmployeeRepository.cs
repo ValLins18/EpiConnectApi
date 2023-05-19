@@ -25,12 +25,23 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             return employee;
         }
 
-        public async Task<Employee>? GetEmployeeById(int employeeId) {
-            return await _context.Employees.FirstOrDefaultAsync(e => e.PersonId == employeeId);
+        public async Task<Employee> GetEmployeeById(int employeeId) {
+            return await _context.Employees
+                .Include(e => e.Address)
+                .Include(e => e.Phone)
+                .Include(e => e.Post)
+                    .ThenInclude(p => p.Department)
+                .Include(e => e.Warnings)
+                .Include(e => e.Epis).FirstOrDefaultAsync(e => e.PersonId == employeeId);
+
         }
 
         public async Task<List<Employee>> GetEmployees() {
-            return await _context.Employees.ToListAsync();
+            return await _context.Employees
+                .Include(e => e.Phone)
+                .Include(e => e.Address)
+                .Include(e => e.Post)
+                .ThenInclude(P => P.Department).ToListAsync();
         }
 
         public async Task<Employee> UpdateEmployee(int id, Employee employee) {

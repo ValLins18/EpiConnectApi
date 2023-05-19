@@ -18,6 +18,11 @@ namespace EpiConnectAPI.Core.MapConfiguration {
 
                 c.CreateMap<Address, AddressRequestView>();
                 c.CreateMap<AddressRequestView, Address>();
+                
+                c.CreateMap<Epi, EpiRequestView>();
+                c.CreateMap<EpiRequestView, Epi>();
+
+
             });
             return mappingConfig;
         }

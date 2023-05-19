@@ -1,4 +1,5 @@
 ﻿using EpiConnectAPI.Core.Enums;
+using System.Text.Json.Serialization;
 
 namespace EpiConnectAPI.Core.Model {
     public class Alert {
@@ -9,6 +10,7 @@ namespace EpiConnectAPI.Core.Model {
         public int MetricsId { get; set; }
         public virtual Metrics Metrics { get; set; }
         public int EpiId { get; set; }
+        [JsonIgnore]
         public virtual Epi Epi { get; set; }
     }
 }
