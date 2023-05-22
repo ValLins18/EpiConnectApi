@@ -4,8 +4,10 @@ using System.Text.Json.Serialization;
 namespace EpiConnectAPI.Core.Model {
     public class Alert {
         public int AlertId { get; set; }
-        public DangerousLevel DangerousLevel{ get; set; }
+        public DangerousLevel? DangerousLevel { get; set; }
         public DateTime AlertDate { get; set; }
+        public bool IsOpen { get; set; } = true;
+        public TimeSpan? UnprotectedTime { get; set; } 
 
         public int MetricsId { get; set; }
         public virtual Metrics Metrics { get; set; }

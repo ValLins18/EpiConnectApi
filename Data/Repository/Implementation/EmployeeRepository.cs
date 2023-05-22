@@ -32,7 +32,8 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
                 .Include(e => e.Post)
                     .ThenInclude(p => p.Department)
                 .Include(e => e.Warnings)
-                .Include(e => e.Epis).FirstOrDefaultAsync(e => e.PersonId == employeeId);
+                .Include(e => e.Epis)
+                    .ThenInclude(e => e.Metrics).FirstOrDefaultAsync(e => e.PersonId == employeeId);
 
         }
 

@@ -19,6 +19,7 @@ builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionS
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEpiRepository, EpiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 
 IMapper mapper = MapConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);

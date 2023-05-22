@@ -21,6 +21,13 @@ namespace EpiConnectAPI.Core.MapConfiguration {
                 
                 c.CreateMap<Epi, EpiRequestView>();
                 c.CreateMap<EpiRequestView, Epi>();
+                
+                c.CreateMap<Metrics, MetricsRequestView>();
+                c.CreateMap<MetricsRequestView, Metrics>();
+
+                c.CreateMap<AlertRequestView, Alert>()
+                .ForMember(dest => dest.Metrics, opt => opt.MapFrom(src => src.Metrics));
+                c.CreateMap<Alert, AlertRequestView>();
 
 
             });
