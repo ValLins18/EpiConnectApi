@@ -48,6 +48,7 @@ namespace EpiConnectAPI.Controllers {
             OpenedAlert.IsOpen = false;
 
             //TODO Regra que define Nivel de periculosidade(dangerousLevel)
+
             OpenedAlert.DangerousLevel = DangerousLevel.LOW;
 
             await _alertRepository.CloseAlert(EpiId, OpenedAlert);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EpiConnectAPI.Core.Model;
+using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,22 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
                 .Include(e => e.Address)
                 .Include(e => e.Post)
                 .ThenInclude(P => P.Department).ToListAsync();
+        }
+
+        public async Task<List<EmployeeMonitoringView>> GetEmployeesForMonitoring() {
+            return await _context.People.OfType<Employee>()
+                .Select(e => new EmployeeMonitoringView {
+                    PersonId = e.PersonId,
+                    Name = e.Name,
+                    Phone = e.Phone,
+                    Post = new Post {
+                        PostId = e.PostId,
+                        Description = e.Post.Description,
+                        Department = e.Post.Department,
+                        Salary = e.Post.Salary 
+                    },
+                    IsOpenAlert = e.Epis.Any(ep => ep.Alerts.Any(a => a.IsOpen))
+                }).ToListAsync();
         }
 
         public async Task<Employee> UpdateEmployee(int id, Employee employee) {

@@ -25,6 +25,10 @@ namespace EpiConnectAPI.Controllers {
         public async Task<IActionResult> GetEmployees() {
             return Ok(await _employeeRepository.GetEmployees());
         }
+        [HttpGet("Monitoring")]
+        public async Task<IActionResult> GetEmployeesForMonitoring() {
+            return Ok(await _employeeRepository.GetEmployeesForMonitoring());
+        }
 
         // GET api/<EmployeeController>/5
         [HttpGet("{id}")]
