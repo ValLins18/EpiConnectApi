@@ -4,6 +4,7 @@ using EpiConnectAPI.Data;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using EpiConnectAPI.Data.Repository.Implementation;
 using Microsoft.Identity.Client;
+using EpiConnectAPI.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
+
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEpiRepository, EpiRepository>();
@@ -43,6 +46,15 @@ if (app.Environment.IsDevelopment()) {
 }
 app.UseCors("AllowAnyOrigin");
 app.UseHttpsRedirection();
+
+app.UseRouting();
+#pragma warning disable ASP0014 // Suggest using top level route registrations
+app.UseEndpoints(endpoints => {
+    endpoints.MapHub<WebSocketHub1>("/websocket1");
+    endpoints.MapHub<WebSocketHub2>("/websocket2");
+    endpoints.MapHub<WebSocketHub3>("/websocket9");
+});
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 
 app.UseAuthorization();
 

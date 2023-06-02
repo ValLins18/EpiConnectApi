@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EpiConnectAPI.Core;
 using EpiConnectAPI.Core.Enums;
 using EpiConnectAPI.Core.Model;
 using EpiConnectAPI.Core.ViewModel;
