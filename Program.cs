@@ -5,6 +5,14 @@ using EpiConnectAPI.Data.Repository.Interfaces;
 using EpiConnectAPI.Data.Repository.Implementation;
 using Microsoft.Identity.Client;
 using EpiConnectAPI.Core;
+using EpiConnectAPI.Services.Security;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +21,32 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt => {
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "EPI-CONNECT_API", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+        Name = "Authorization",
+
+        Description = "Authorization header using the Bearer scheme",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                          {
+                              Reference = new OpenApiReference
+                              {
+                                  Type = ReferenceType.SecurityScheme,
+                                  Id = "Bearer"
+                              }
+                          },
+                         new string[] {}
+                    }
+                });
+});
 
 builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
 
@@ -23,19 +56,44 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEpiRepository, EpiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddAuthorization(opt => {
+    opt.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme) //todos os endpoints necessitam de um token para serem acessados
+    .RequireAuthenticatedUser()
+    .Build();
+});
+builder.Services.AddAuthentication(authOpt => {
+    authOpt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    authOpt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(jwtOpt => {
+        jwtOpt.TokenValidationParameters = new TokenValidationParameters() {
+            ValidateActor = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtBearerTokenSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtBearerTokenSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtBearerTokenSettings:SecretKey"]))
+        };
+    });
 
 IMapper mapper = MapConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAnyOrigin", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAnyOrigin", builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//               .AllowAnyHeader()
+//               .AllowAnyMethod();
+//    });
+//});
 
 var app = builder.Build();
 
@@ -44,18 +102,18 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowAnyOrigin");
+//app.UseCors("AllowAnyOrigin");
 app.UseHttpsRedirection();
 
-app.UseRouting();
 #pragma warning disable ASP0014 // Suggest using top level route registrations
-app.UseEndpoints(endpoints => {
-    endpoints.MapHub<WebSocketHub1>("/websocket1");
-    endpoints.MapHub<WebSocketHub2>("/websocket2");
-    endpoints.MapHub<WebSocketHub3>("/websocket9");
-});
+//app.UseRouting();
+//app.UseEndpoints(endpoints => {
+//    endpoints.MapHub<WebSocketHub1>("/websocket1");
+//    endpoints.MapHub<WebSocketHub2>("/websocket2");
+//    endpoints.MapHub<WebSocketHub3>("/websocket9");
+//});
 #pragma warning restore ASP0014 // Suggest using top level route registrations
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
