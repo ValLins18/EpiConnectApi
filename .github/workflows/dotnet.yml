@@ -36,6 +36,4 @@ jobs:
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws configure set region us-east-1
-        aws ssm send-command --document-name "AWS-RunPowerShellScript" \
-          --targets "Key=tag:Name,Values=SqlServer" \
-          --parameters commands="Import-Module WebAdministration; Stop-WebSite -Name 'Default Web Site'; Remove-WebSite -Name 'EpiConnectApi'; New-WebSite -Name 'EpiConnectApi' -PhysicalPath 'C:\App' -Port 80; New-WebApplication -Site 'EpiConnectApi' -Name '/' -PhysicalPath 'C:\App' -ApplicationPool '.NET v7.0'"
+        aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=SqlServer" --parameters commands="Import-Module WebAdministration; Stop-WebSite -Name 'Default Web Site'; Remove-WebSite -Name 'EpiConnectApi'; New-WebSite -Name 'EpiConnectApi' -PhysicalPath 'C:\App' -Port 80; New-WebApplication -Site 'EpiConnectApi' -Name '/' -PhysicalPath 'C:\App' -ApplicationPool '.NET v7.0'"
