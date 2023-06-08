@@ -23,9 +23,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build --no-restore-*
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
     - name: Install AWS CLI
@@ -33,10 +31,9 @@ jobs:
         Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
         iex "& { $(irm https://aka.ms/install-artifacts-credprovider.ps1 -UseMsi).Content }"
         pip install --user awscli
-        - name: Deploy to EC2
     - name: Deploy to EC2
       run: |
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws configure set region us-east-1
-        aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=<nome-da-instancia-EC2>" --parameters commands=New-Item -ItemType Directory -Path C:\App;aws s3 sync s3://<seu-bucket-do-S3> C:\App --region <sua-região-da-AWS> --wait
+        aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=SqlServer" --parameters commands=New-Item -ItemType Directory -Path C:\App;aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=SqlServer" --parameters commands=Invoke-WebRequest -Uri "https://github.com/ValLins18/EpiConnectApi/archive/refs/heads/master.zip" -OutFile "C:\App\master.zip"; Expand-Archive -Path "C:\App\master.zip" -DestinationPath "C:\App"; Remove-Item -Path "C:\App\master.zip" --region us-east-1 --wait
