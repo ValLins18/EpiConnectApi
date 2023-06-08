@@ -28,9 +28,9 @@ jobs:
       run: dotnet publish --configuration Release --output ./publish
     - name: Install AWS CLI
       run: |
-        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-        iex "& { $(irm https://aka.ms/install-artifacts-credprovider.ps1).Content }"
-        pip install --user awscli
+            Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+            irm -Uri https://aka.ms/install-artifacts-credprovider.ps1 | iex
+            pip install --user awscli
     - name: Deploy to EC2
       run: |
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
