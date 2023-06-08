@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace EpiConnectAPI.Data.Configuration {
     public class EpiConfiguration : IEntityTypeConfiguration<Epi> {
         public void Configure(EntityTypeBuilder<Epi> builder) {
-            builder.ToTable(nameof(Epi), "dbo");
+            builder.ToTable(nameof(Epi));
 
             builder.HasKey(x => x.EpiId);
             builder.Property(x => x.EpiId).HasColumnName(nameof(Epi.EpiId)).ValueGeneratedOnAdd();

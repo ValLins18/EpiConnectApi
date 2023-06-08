@@ -3,8 +3,6 @@ using EpiConnectAPI.Core.MapConfiguration;
 using EpiConnectAPI.Data;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using EpiConnectAPI.Data.Repository.Implementation;
-using Microsoft.Identity.Client;
-using EpiConnectAPI.Core;
 using EpiConnectAPI.Services.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,7 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
+using MySql.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +47,11 @@ builder.Services.AddSwaggerGen(opt => {
                 });
 });
 
-builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
-
+//builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
+builder.Services.AddDbContext<AppDbContext>(opt => {
+    //opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
+});
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();

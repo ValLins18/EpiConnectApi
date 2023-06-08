@@ -48,8 +48,10 @@ namespace EpiConnectAPI.Controllers {
         [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] EmployeeRequestView employeeRequest) {
+            int employeeIdCreated = 0;
+            IdentityUser user = new IdentityUser();
             try {
-                var user = new IdentityUser {
+                user = new IdentityUser {
                     Email = employeeRequest.Email,
                     UserName = employeeRequest.Email,
                     PhoneNumber = employeeRequest.Phone.DDD + employeeRequest.Phone.PhoneNumber
@@ -60,6 +62,7 @@ namespace EpiConnectAPI.Controllers {
                 }
                 var employee = _mapper.Map<Employee>(employeeRequest);
                 employee = await _employeeRepository.CreateEmployee(employee);
+                employeeIdCreated = employee.PersonId;
 
                 var claims = new List<Claim> {
                     new Claim(nameof(employee.PersonId), employee.PersonId.ToString()),
@@ -74,6 +77,8 @@ namespace EpiConnectAPI.Controllers {
                 return Created("", new { user.Id, user.Email, employee.PersonId });
             }
             catch (Exception ex) {
+                await _employeeRepository.DeleteEmployee(employeeIdCreated);
+                await _userManager.DeleteAsync(user);
                 return BadRequest(ex.Message);
             }
         }

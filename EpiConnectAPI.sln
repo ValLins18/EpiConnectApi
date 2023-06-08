@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpiConnectAPI", "EpiConnectAPI.csproj", "{3560E53A-EA79-4DFD-8E90-1614D54F74D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpiConnectFrontEnd", "..\EpiConnectFrontEnd\EpiConnectFrontEnd.csproj", "{0FCB934D-433F-41DE-9D12-1D58EDFA49A8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{3560E53A-EA79-4DFD-8E90-1614D54F74D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3560E53A-EA79-4DFD-8E90-1614D54F74D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3560E53A-EA79-4DFD-8E90-1614D54F74D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FCB934D-433F-41DE-9D12-1D58EDFA49A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FCB934D-433F-41DE-9D12-1D58EDFA49A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FCB934D-433F-41DE-9D12-1D58EDFA49A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FCB934D-433F-41DE-9D12-1D58EDFA49A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

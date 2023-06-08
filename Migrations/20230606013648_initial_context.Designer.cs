@@ -3,7 +3,6 @@ using System;
 using EpiConnectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EpiConnectAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230512131522_protype")]
-    partial class protype
+    [Migration("20230606013648_initial_context")]
+    partial class initial_context
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +20,7 @@ namespace EpiConnectAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Address", b =>
                 {
@@ -32,38 +29,36 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("AddressId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("City");
 
                     b.Property<string>("Neighborhood")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Neighborhood");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Number");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(2)
-                        .HasColumnType("nvarchar(2)")
+                        .HasColumnType("varchar(2)")
                         .HasColumnName("State");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Street");
 
                     b.Property<string>("ZipCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("AddressId");
 
@@ -77,13 +72,11 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("AlertId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlertId"));
-
                     b.Property<DateTime>("AlertDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("AlertDate");
 
-                    b.Property<int>("DangerousLevel")
+                    b.Property<int?>("DangerousLevel")
                         .HasColumnType("int")
                         .HasColumnName("DangerousLevel");
 
@@ -91,9 +84,17 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("EpiId");
 
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("IsOpen");
+
                     b.Property<int>("MetricsId")
                         .HasColumnType("int")
                         .HasColumnName("MetricsId");
+
+                    b.Property<TimeSpan?>("UnprotectedTime")
+                        .HasColumnType("time(6)")
+                        .HasColumnName("UnprotectedTime");
 
                     b.HasKey("AlertId");
 
@@ -111,12 +112,10 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DepartmentId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("DepartmentId");
 
@@ -130,18 +129,16 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("EpiId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EpiId"));
-
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int")
                         .HasColumnName("EmployeeId");
 
                     b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("ExpiryDate");
 
                     b.Property<DateTime>("ManufacturingDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("ManufacturingDate");
 
                     b.Property<int?>("MetricsId")
@@ -150,12 +147,12 @@ namespace EpiConnectAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Name");
 
                     b.Property<int>("ProtectionType")
                         .HasColumnType("int")
-                        .HasColumnName("ProtectionTypeId");
+                        .HasColumnName("ProtectionType");
 
                     b.HasKey("EpiId");
 
@@ -163,7 +160,7 @@ namespace EpiConnectAPI.Migrations
 
                     b.HasIndex("MetricsId");
 
-                    b.ToTable("Epi", "dbo");
+                    b.ToTable("Epi", (string)null);
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Metrics", b =>
@@ -173,18 +170,16 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("MetricsId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MetricsId"));
-
                     b.Property<int>("BatteryLevel")
                         .HasColumnType("int")
                         .HasColumnName("BatteryLevel");
 
                     b.Property<bool>("IsContingency")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsContingency");
 
                     b.Property<bool>("IsProtected")
-                        .HasColumnType("bit")
+                        .HasColumnType("tinyint(1)")
                         .HasColumnName("IsProtected");
 
                     b.Property<int?>("Noise")
@@ -203,26 +198,24 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PersonId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonId"));
-
                     b.Property<int>("AddressId")
                         .HasColumnType("int")
                         .HasColumnName("AddressId");
 
                     b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("BirthDate");
 
                     b.Property<string>("Document")
                         .IsRequired()
                         .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
+                        .HasColumnType("varchar(15)")
                         .HasColumnName("Document");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
+                        .HasColumnType("varchar(30)")
                         .HasColumnName("Email");
 
                     b.Property<string>("Gender")
@@ -231,13 +224,13 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnName("Gender");
 
                     b.Property<string>("ImgPath")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("ImgPath");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)")
+                        .HasColumnType("varchar(70)")
                         .HasColumnName("Name");
 
                     b.Property<int>("PhoneId")
@@ -262,21 +255,19 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PhoneId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PhoneId"));
-
                     b.Property<string>("DDD")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("DDD");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("PhoneNumber");
 
                     b.HasKey("PhoneId");
 
-                    b.ToTable("Phone", "dbo");
+                    b.ToTable("Phone", (string)null);
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Post", b =>
@@ -286,15 +277,13 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("PostId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostId"));
-
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int")
                         .HasColumnName("DepartmentId");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Salary")
                         .HasPrecision(10, 2)
@@ -315,16 +304,14 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("UserId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Email");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("longtext")
                         .HasColumnName("Password");
 
                     b.HasKey("UserId");
@@ -339,8 +326,6 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("WarningId");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WarningId"));
-
                     b.Property<int>("AlertId")
                         .HasColumnType("int")
                         .HasColumnName("AlertId");
@@ -350,7 +335,7 @@ namespace EpiConnectAPI.Migrations
                         .HasColumnName("EmployeeId");
 
                     b.Property<DateTime>("WarningDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("WarningDate");
 
                     b.HasKey("WarningId");
@@ -362,12 +347,204 @@ namespace EpiConnectAPI.Migrations
                     b.ToTable("Warning", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Employee", b =>
                 {
                     b.HasBaseType("EpiConnectAPI.Core.Model.Person");
 
                     b.Property<DateTime>("EntryDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("EntryDate");
 
                     b.Property<int>("PostId")
@@ -466,6 +643,57 @@ namespace EpiConnectAPI.Migrations
                     b.Navigation("Alert");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Employee", b =>
