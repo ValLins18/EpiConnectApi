@@ -242,7 +242,6 @@ namespace EpiConnectAPI.Migrations
 
                     b.ToTable("Person", (string)null);
 
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Phone", b =>
@@ -695,6 +694,8 @@ namespace EpiConnectAPI.Migrations
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Employee", b =>
                 {
+                    b.HasBaseType("EpiConnectAPI.Core.Model.Person");
+
                     b.HasOne("EpiConnectAPI.Core.Model.Person", null)
                         .WithOne()
                         .HasForeignKey("EpiConnectAPI.Core.Model.Employee", "PersonId")

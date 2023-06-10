@@ -245,7 +245,7 @@ namespace EpiConnectAPI.Migrations
 
                     b.ToTable("Person", (string)null);
 
-                    b.UseTptMappingStrategy();
+                    
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Phone", b =>
