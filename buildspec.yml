@@ -18,7 +18,7 @@ phases:
   post_build:
     commands:
       - echo Post-build started on `date`
-      - dotnet publish -c Release $CODEBUILD_SRC_DIR/publish_output
+      - dotnet publish -c Release --output $CODEBUILD_SRC_DIR/publish_output
 
 artifacts:
   files:
