@@ -3,7 +3,7 @@
 phases:
   install:
     commands:
-      - curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel STS
+      - curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 7.0
 
   pre_build:
     commands:
@@ -18,7 +18,7 @@ phases:
   post_build:
     commands:
       - echo Post-build started on `date`
-      - dotnet publish -c Release --output $CODEBUILD_SRC_DIR/publish_output
+      - dotnet publish -c Release $CODEBUILD_SRC_DIR/publish_output
 
 artifacts:
   files:
