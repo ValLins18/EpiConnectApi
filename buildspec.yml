@@ -1,10 +1,6 @@
 ﻿version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      dotnet: 7.x
-
   pre_build:
     commands:
       - echo Pre-build started on `date`
