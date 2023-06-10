@@ -105,7 +105,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 app.UseCors("AllowAnyOrigin");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 #pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseRouting();
