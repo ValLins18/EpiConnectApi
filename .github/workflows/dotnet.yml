@@ -1,0 +1,41 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Publish
+      run: dotnet publish --configuration Release
+    - name: Install AWS CLI
+      run: |
+            Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+            irm -Uri https://aka.ms/install-artifacts-credprovider.ps1 | iex
+            pip install --user awscli
+    - name: Deploy to EC2
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region us-east-1
+        aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=SqlServer" --parameters "commands=New-Item -ItemType Directory -Path C:\App; Copy-Item -Path D:\a\EpiConnectApi\EpiConnectApi\bin\Release\net7.0\publish\* -Destination C:\App -Recurse"
+        aws ssm send-command --document-name "AWS-RunPowerShellScript" --targets "Key=tag:Name,Values=SqlServer" --parameters "commands=Import-Module WebAdministration; Stop-WebSite -Name Default Web Site; Remove-WebSite -Name EpiConnectApi; New-WebSite -Name EpiConnectApi -PhysicalPath C:\App -Port 5135; New-WebApplication -Site EpiConnectApi -Name / -PhysicalPath C:\App -ApplicationPool .NET 7"
+        
