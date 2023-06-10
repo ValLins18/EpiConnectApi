@@ -15,15 +15,28 @@ namespace EpiConnectAPI.Controllers {
     public class LoginController : ControllerBase {
 
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService, UserManager<IdentityUser> userManager, IMapper mapper) {
+        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService, UserManager<IdentityUser> userManager, IMapper mapper, IUserRepository userRepository) {
             _employeeRepository = employeeRepository;
             _tokenService = tokenService;
             _userManager = userManager;
             _mapper = mapper;
+            _userRepository = userRepository;
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(UserRequestView userRequest) {
+            var user = await _userRepository.GetUserByEmail(userRequest.Email);
+            if (user == null) {
+                return NotFound();
+            }
+            if(!user.Password.Equals(userRequest.Password)) {
+                return BadRequest("senha incorreta");
+            }
+            return Ok(user);
         }
 
         [HttpPost("token")]
