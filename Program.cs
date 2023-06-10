@@ -51,8 +51,8 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
 builder.Services.AddDbContext<AppDbContext>(opt => {
-    //opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
+    opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
+    //opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
 });
 builder.Services.AddSignalR();
 
