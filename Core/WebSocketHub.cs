@@ -1,8 +1,10 @@
 ﻿using EpiConnectAPI.Core.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace EpiConnectAPI.Core {
     public class WebSocketHub1 : Hub {
+        [AllowAnonymous]
         public override async Task OnConnectedAsync() {
 
             while(true) {

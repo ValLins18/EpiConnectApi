@@ -15,8 +15,6 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
-        //}
-
         public Task<User> Register() {
             throw new NotImplementedException();
         }

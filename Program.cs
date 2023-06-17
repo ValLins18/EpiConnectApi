@@ -109,15 +109,15 @@ app.UseHttpsRedirection();
 
 #pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseRouting();
-app.UseEndpoints(endpoints => {
-    endpoints.MapHub<WebSocketHub1>("/websocket1");
-    endpoints.MapHub<WebSocketHub2>("/websocket2");
-    endpoints.MapHub<WebSocketHub3>("/websocket9");
-});
 #pragma warning restore ASP0014 // Suggest using top level route registrations
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseEndpoints(endpoints => {
+    endpoints.MapHub<WebSocketHub1>("/websocket1").AllowAnonymous();
+    endpoints.MapHub<WebSocketHub2>("/websocket2").AllowAnonymous();
+    endpoints.MapHub<WebSocketHub3>("/websocket9").AllowAnonymous();
+});
 app.MapControllers();
 
 app.Run();
