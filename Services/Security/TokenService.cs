@@ -17,7 +17,8 @@ namespace EpiConnectAPI.Services.Security {
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Email)
             };
 
             claims.AddRange(roles);

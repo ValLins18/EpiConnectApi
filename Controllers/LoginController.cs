@@ -19,43 +19,81 @@ namespace EpiConnectAPI.Controllers {
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService, UserManager<IdentityUser> userManager, IMapper mapper, IUserRepository userRepository) {
+        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService,
+            UserManager<IdentityUser> userManager, IMapper mapper, IUserRepository userRepository, RoleManager<IdentityRole> roleManager) {
             _employeeRepository = employeeRepository;
             _tokenService = tokenService;
             _userManager = userManager;
             _mapper = mapper;
             _userRepository = userRepository;
+            _roleManager = roleManager;
         }
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserRequestView userRequest) {
             var user = await _userRepository.GetUserByEmail(userRequest.Email);
             if (user == null) {
                 return NotFound();
             }
-            if(!user.Password.Equals(userRequest.Password)) {
+            if (!user.Password.Equals(userRequest.Password)) {
                 return BadRequest("senha incorreta");
             }
             return Ok(user);
+        }
+        [HttpPost("roles")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddRole(string roleName) {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null) {
+                return Created("", await _roleManager.CreateAsync(new IdentityRole { Name = roleName }));
+            }
+            else {
+                return BadRequest("role already exists");
+            }
+
         }
 
         [HttpPost("token")]
         [AllowAnonymous]
         public async Task<IActionResult> GetToken(UserRequestView userRequest) {
             if (userRequest == null) {
-                return BadRequest("Login Cannot be null");
+                return BadRequest(new LoginResultView {
+                    Successful = false,
+                    Error = "Login Cannot be null",
+                    Token = null
+                });
             }
             var user = await _userManager.FindByEmailAsync(userRequest.Email);
             if (user == null) {
-                return BadRequest("User does not exists");
+                return BadRequest(new LoginResultView {
+                    Successful = false,
+                    Error = "User does not exists",
+                    Token = null
+                });
             }
             var passwordCheck = await _userManager.CheckPasswordAsync(user, userRequest.Password);
             if (!passwordCheck) {
-                return BadRequest("Wrong Password");
+                return BadRequest(new LoginResultView {
+                    Successful = false,
+                    Error = "Wrong Password",
+                    Token = null
+                });
             }
             var claims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in userRoles) {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var token = _tokenService.GetToken(user, claims);
-            return Ok(token);
+            return Ok(new LoginResultView {
+                Successful = true,
+                Error = null,
+                Token = token
+            });
         }
 
         [HttpPost("register")]
@@ -81,9 +119,9 @@ namespace EpiConnectAPI.Controllers {
                     new Claim(nameof(employee.PersonId), employee.PersonId.ToString()),
                     new Claim(nameof(employee.Name), employee.Name)
                 };
-
+                var roleResult = await _userManager.AddToRoleAsync(user, "admin");
                 var claimResult = await _userManager.AddClaimsAsync(user, claims);
-                if(!claimResult.Succeeded) {
+                if (!claimResult.Succeeded) {
                     await _employeeRepository.DeleteEmployee(employee.PersonId);
                     return BadRequest(claimResult.Errors);
                 }

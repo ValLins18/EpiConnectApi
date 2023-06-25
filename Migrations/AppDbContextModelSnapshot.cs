@@ -16,7 +16,7 @@ namespace EpiConnectAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "6.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Address", b =>
@@ -241,7 +241,6 @@ namespace EpiConnectAPI.Migrations
                     b.HasIndex("PhoneId");
 
                     b.ToTable("Person", (string)null);
-
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Phone", b =>
@@ -694,8 +693,6 @@ namespace EpiConnectAPI.Migrations
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Employee", b =>
                 {
-                    b.HasBaseType("EpiConnectAPI.Core.Model.Person");
-
                     b.HasOne("EpiConnectAPI.Core.Model.Person", null)
                         .WithOne()
                         .HasForeignKey("EpiConnectAPI.Core.Model.Employee", "PersonId")
