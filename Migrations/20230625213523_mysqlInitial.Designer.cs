@@ -11,15 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EpiConnectAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230606013648_initial_context")]
-    partial class initial_context
+    [Migration("20230625213523_mysqlInitial")]
+    partial class mysqlInitial
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "6.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Address", b =>
@@ -244,8 +243,6 @@ namespace EpiConnectAPI.Migrations
                     b.HasIndex("PhoneId");
 
                     b.ToTable("Person", (string)null);
-
-                    
                 });
 
             modelBuilder.Entity("EpiConnectAPI.Core.Model.Phone", b =>

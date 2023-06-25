@@ -4,6 +4,7 @@ using EpiConnectAPI.Core.Enums;
 using EpiConnectAPI.Core.Model;
 using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EpiConnectAPI.Controllers {
@@ -32,6 +33,7 @@ namespace EpiConnectAPI.Controllers {
         }
 
         // POST api/<AlertController>
+        [AllowAnonymous]
         [HttpPost("/abrirAlerta")]
         public async Task<IActionResult> AbrirAlerta([FromBody] AlertRequestView alertRequest) {
             Alert alert = _mapper.Map<Alert>(alertRequest);
@@ -42,6 +44,7 @@ namespace EpiConnectAPI.Controllers {
 
 
         // PUT api/<AlertController>/5+
+        [AllowAnonymous]
         [HttpPut("/fecharAlerta/{EpiId}")]
         public async Task<IActionResult> FecharAlerta(int EpiId) {
             Alert OpenedAlert = await _alertRepository.GetLastAlertByEpiId(EpiId);

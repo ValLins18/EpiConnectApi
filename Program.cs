@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using MySql.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using EpiConnectAPI.Core;
 
@@ -51,8 +50,8 @@ builder.Services.AddSwaggerGen(opt => {
 
 //builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
 builder.Services.AddDbContext<AppDbContext>(opt => {
-    //opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
+    opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
+    //opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
 });
 builder.Services.AddSignalR();
 
@@ -76,8 +75,8 @@ builder.Services.AddAuthentication(authOpt => {
 })
     .AddJwtBearer(jwtOpt => {
         jwtOpt.TokenValidationParameters = new TokenValidationParameters() {
-            ValidateActor = true,
-            ValidateAudience = true,
+            ValidateActor = false,
+            ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtBearerTokenSettings:Issuer"],
@@ -101,8 +100,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowAnyOrigin");
 app.UseHttpsRedirection();
@@ -116,7 +115,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints => {
     endpoints.MapHub<WebSocketHub1>("/websocket1").AllowAnonymous();
     endpoints.MapHub<WebSocketHub2>("/websocket2").AllowAnonymous();
-    endpoints.MapHub<WebSocketHub3>("/websocket9").AllowAnonymous();
+    endpoints.MapHub<WebSocketHub3>("/websocket3").AllowAnonymous();
 });
 app.MapControllers();
 

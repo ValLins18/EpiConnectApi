@@ -58,8 +58,22 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
                         PostId = e.PostId,
                         Description = e.Post.Description,
                         Department = e.Post.Department,
-                        Salary = e.Post.Salary 
+                        Salary = e.Post.Salary
                     },
+                    EmployeeLeader = _context.Employees
+                        .Where(el => el.Post.Description == "ENGENHEIRO" && el.Post.Department.Description == e.Post.Department.Description)
+                        .Select(el => new EmployeeLeaderView {
+                            PersonId = el.PersonId,
+                            Name = el.Name,
+                            Phone = el.Phone,
+                            Post = new Post {
+                                PostId = el.PostId,
+                                Description = el.Post.Description,
+                                Department = el.Post.Department,
+                                Salary = el.Post.Salary
+                            }
+                        })
+                        .FirstOrDefault(),
                     IsOpenAlert = e.Epis.Any(ep => ep.Alerts.Any(a => a.IsOpen))
                 }).ToListAsync();
         }

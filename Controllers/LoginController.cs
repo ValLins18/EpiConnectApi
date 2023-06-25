@@ -19,13 +19,16 @@ namespace EpiConnectAPI.Controllers {
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService, UserManager<IdentityUser> userManager, IMapper mapper, IUserRepository userRepository) {
+        public LoginController(IEmployeeRepository employeeRepository, ITokenService tokenService,
+            UserManager<IdentityUser> userManager, IMapper mapper, IUserRepository userRepository, RoleManager<IdentityRole> roleManager) {
             _employeeRepository = employeeRepository;
             _tokenService = tokenService;
             _userManager = userManager;
             _mapper = mapper;
             _userRepository = userRepository;
+            _roleManager = roleManager;
         }
         [HttpPost]
         [AllowAnonymous]
@@ -39,13 +42,27 @@ namespace EpiConnectAPI.Controllers {
             }
             return Ok(user);
         }
+        [HttpPost("roles")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddRole(string roleName) {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null) {
+                return Created("", await _roleManager.CreateAsync(new IdentityRole { Name = roleName }));
+            }
+            else {
+                return BadRequest("role already exists");
+            }
+
+        }
 
         [HttpPost("token")]
         [AllowAnonymous]
         public async Task<IActionResult> GetToken(UserRequestView userRequest) {
             if (userRequest == null) {
                 return BadRequest(new LoginResultView {
-                    Successful = false, Error = "Login Cannot be null", Token = null
+                    Successful = false,
+                    Error = "Login Cannot be null",
+                    Token = null
                 });
             }
             var user = await _userManager.FindByEmailAsync(userRequest.Email);
@@ -65,6 +82,12 @@ namespace EpiConnectAPI.Controllers {
                 });
             }
             var claims = await _userManager.GetClaimsAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in userRoles) {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var token = _tokenService.GetToken(user, claims);
             return Ok(new LoginResultView {
                 Successful = true,
@@ -96,7 +119,7 @@ namespace EpiConnectAPI.Controllers {
                     new Claim(nameof(employee.PersonId), employee.PersonId.ToString()),
                     new Claim(nameof(employee.Name), employee.Name)
                 };
-
+                var roleResult = await _userManager.AddToRoleAsync(user, "admin");
                 var claimResult = await _userManager.AddClaimsAsync(user, claims);
                 if (!claimResult.Succeeded) {
                     await _employeeRepository.DeleteEmployee(employee.PersonId);

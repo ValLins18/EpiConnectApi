@@ -6,10 +6,8 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace EpiConnectAPI.Migrations
 {
-    /// <inheritdoc />
-    public partial class initial_context : Migration
+    public partial class mysqlInitial : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
@@ -515,7 +513,6 @@ namespace EpiConnectAPI.Migrations
                 column: "EmployeeId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

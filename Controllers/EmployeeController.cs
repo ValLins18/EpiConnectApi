@@ -26,6 +26,7 @@ namespace EpiConnectAPI.Controllers {
         public async Task<IActionResult> GetEmployees() {
             return Ok(await _employeeRepository.GetEmployees());
         }
+
         [HttpGet("Monitoring")]
         public async Task<IActionResult> GetEmployeesForMonitoring() {
             return Ok(await _employeeRepository.GetEmployeesForMonitoring());
@@ -42,7 +43,8 @@ namespace EpiConnectAPI.Controllers {
         [HttpPost]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeRequestView employeeRequest) {
             var employee = _mapper.Map<Employee>(employeeRequest);
-            return Created("", await _employeeRepository.CreateEmployee(employee));
+            await _employeeRepository.CreateEmployee(employee);
+            return Created("", employeeRequest);
         }
 
         // PUT api/<EmployeeController>/5
