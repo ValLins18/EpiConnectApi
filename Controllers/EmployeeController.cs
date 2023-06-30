@@ -46,15 +46,5 @@ namespace EpiConnectAPI.Controllers {
             await _employeeRepository.CreateEmployee(employee);
             return Created("", employeeRequest);
         }
-
-        // PUT api/<EmployeeController>/5
-        [HttpPut("{id}")]
-        public void UpdateEmployee(int id, [FromBody] string value) {
-        }
-
-        // DELETE api/<EmployeeController>/5
-        [HttpDelete("{id}")]
-        public void DeleteEmployee(int id) {
-        }
     }
 }
