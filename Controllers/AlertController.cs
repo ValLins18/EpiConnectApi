@@ -19,19 +19,6 @@ namespace EpiConnectAPI.Controllers {
             _mapper = mapper;
         }
 
-
-        // GET: api/<AlertController>
-        [HttpGet]
-        public IEnumerable<string> Get() {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<AlertController>/5
-        [HttpGet("{id}")]
-        public string Get(int id) {
-            return "value";
-        }
-
         // POST api/<AlertController>
         [AllowAnonymous]
         [HttpPost("/abrirAlerta")]
@@ -41,7 +28,6 @@ namespace EpiConnectAPI.Controllers {
             await _alertRepository.OpenAlert(alert);
             return Created("", alert);
         }
-
 
         // PUT api/<AlertController>/5+
         [AllowAnonymous]
@@ -61,11 +47,6 @@ namespace EpiConnectAPI.Controllers {
                 OpenedAlert.IsOpen,
                 DangerousLevel = OpenedAlert.DangerousLevel.ToString()
             });
-        }
-
-        // DELETE api/<AlertController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) {
         }
     }
 }

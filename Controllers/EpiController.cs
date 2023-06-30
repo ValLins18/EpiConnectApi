@@ -37,15 +37,5 @@ namespace EpiConnectAPI.Controllers {
             Epi epi = _mapper.Map<Epi>(epiRequest);
             return Created("", await _epiRepository.CreateEpi(epi));
         }
-
-        // PUT api/<EpiController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) {
-        }
-
-        // DELETE api/<EpiController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) {
-        }
     }
 }

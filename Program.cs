@@ -50,8 +50,12 @@ builder.Services.AddSwaggerGen(opt => {
 
 //builder.Services.AddSqlServer<AppDbContext>(builder.Configuration.GetConnectionString("EpiConnect"));
 builder.Services.AddDbContext<AppDbContext>(opt => {
-    opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
-    //opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
+    if (builder.Environment.IsDevelopment()) {
+        opt.UseSqlServer(builder.Configuration.GetConnectionString("EpiConnect"));
+    }
+    else {
+        opt.UseMySQL(builder.Configuration.GetConnectionString("EpiConnectMysql"));
+    }
 });
 builder.Services.AddSignalR();
 
@@ -59,6 +63,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEpiRepository, EpiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
