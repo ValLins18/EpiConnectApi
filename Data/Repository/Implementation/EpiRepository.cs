@@ -1,4 +1,5 @@
 ﻿using EpiConnectAPI.Core.Model;
+using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,18 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             return epi;
         }
 
+        public async Task<List<AlertsEpiView>> GetAlertsByEpi() {
+            var query = from e in _context.Epis
+                        join a in _context.Alerts on e.EpiId equals a.EpiId into alerts
+                        from alert in alerts.DefaultIfEmpty()
+                        group alert by e.Name into g
+                        select new AlertsEpiView {
+                            EpiName = g.Key,
+                            AlertCount = g.Count(x => x != null)
+                        };
+            return await query.ToListAsync();
+        }
+
         public async Task<Epi> GetEpiById(int epiId) {
             return await _context.Epis.FirstOrDefaultAsync(e => e.EpiId == epiId);
         }
@@ -36,5 +49,6 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             await _context.SaveChangesAsync();
             return epi;
         }
+
     }
 }

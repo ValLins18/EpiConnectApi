@@ -2,6 +2,7 @@
 using EpiConnectAPI.Core.Model;
 using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,6 +30,11 @@ namespace EpiConnectAPI.Controllers {
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEpi(int id) {
             return Ok(await _epiRepository.GetEpiById(id));
+        }
+
+        [HttpGet("Alerts")]
+        public async Task<IActionResult> GetAlertsByEpi() {
+            return Ok(await _epiRepository.GetAlertsByEpi());
         }
 
         // POST api/<EpiController>
