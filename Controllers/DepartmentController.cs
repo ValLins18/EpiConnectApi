@@ -14,12 +14,12 @@ namespace EpiConnectAPI.Controllers {
         public DepartmentController(IDepartmentRepository departmentRepository) {
             _departmentRepository = departmentRepository;
         }
-        [AllowAnonymous]
+
         [HttpGet]
         public async Task<IActionResult> GetDepartments() {
             return Ok(await _departmentRepository.GetDepartmentsAsync());
         }
-        [AllowAnonymous]
+
         [HttpGet("Alerts")]
         public async Task<IActionResult> GetAlertsByDepartment() {
             return Ok(await _departmentRepository.GetCountAlertsByDepartment());

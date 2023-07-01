@@ -1,4 +1,5 @@
 ﻿using EpiConnectAPI.Core.Model;
+using EpiConnectAPI.Core.ViewModel;
 
 namespace EpiConnectAPI.Data.Repository.Interfaces {
     public interface IEpiRepository {
@@ -7,5 +8,7 @@ namespace EpiConnectAPI.Data.Repository.Interfaces {
         Task<Epi> CreateEpi(Epi epi);
         Task<Epi> UpdateEpi(int id, Epi epi);
         Task<Epi> DeleteEpi(int epiId);
+
+        Task<List<AlertsEpiView>> GetAlertsByEpi();
     }
 }
