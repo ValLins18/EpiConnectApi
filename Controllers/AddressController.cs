@@ -8,7 +8,7 @@ namespace EpiConnectAPI.Controllers {
     public class AddressController : ControllerBase {
 
         // GET api/<AddressController>/5
-        [HttpGet("{testandodeplouyh}")]
+        [HttpGet("testandodeplouyh")]
         public string Get(int id) {
             return "value";
         }
