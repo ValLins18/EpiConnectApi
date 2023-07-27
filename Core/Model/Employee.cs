@@ -2,6 +2,7 @@
     public class Employee : Person{
 
         public DateTime EntryDate { get; set; }
+        public string WorkShift { get; set; }
         public List<Epi> Epis{ get; set; }
         public List<Warning>? Warnings { get; set; }
 

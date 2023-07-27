@@ -1,4 +1,5 @@
 ﻿using EpiConnectAPI.Core.Model;
+using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,13 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             _context.Alerts.Update(alert);
             await _context.SaveChangesAsync();
             return alert;
+        }
+
+        public Task<List<WorkshiftAlertsView>> GetAlertsCountByWorkshift() {
+            throw new NotImplementedException();
+            //var result = from em in _context.Employees
+            //             join e in _context.Epis on em.PersonId equals e.EmployeeId into e+
+            //             join a in _context.Alerts on e.
         }
 
         public async Task<Alert> GetLastAlertByEpiId(int epiId) {
