@@ -5,5 +5,6 @@ namespace EpiConnectAPI.Core.ViewModel {
         public DateTime EntryDate { get; set; }
         public int PostId { get; set; } 
         public User? User { get; set; }
+        public string Workshift { get; set; }
     }
 }

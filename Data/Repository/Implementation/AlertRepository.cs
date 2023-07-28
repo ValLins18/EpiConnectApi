@@ -1,8 +1,10 @@
 ﻿using EpiConnectAPI.Core.Model;
+using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace EpiConnectAPI.Data.Repository.Implementation {
+namespace EpiConnectAPI.Data.Repository.Implementation
+{
     public class AlertRepository : IAlertRepository {
         private readonly AppDbContext _context;
 
@@ -20,7 +22,7 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             var result = from em in _context.Employees
                          join e in _context.Epis on em.PersonId equals e.EmployeeId
                          join a in _context.Alerts on e.EpiId equals a.EpiId
-                         group a by em.WorkShift into g
+                         group a by em.Workshift into g
                          select new WorkshiftAlertsView {
                              WorkshiftName = g.Key,
                              AlertCount = g.Count(a => a != null)

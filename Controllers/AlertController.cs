@@ -18,7 +18,6 @@ namespace EpiConnectAPI.Controllers {
             _alertRepository = alertRepository;
             _mapper = mapper;
         }
-
         [HttpGet("/workshiftalerts")]
         public async Task<IActionResult> GetAlertsByDepartment() {
             return Ok(await _alertRepository.GetAlertsCountByWorkshift());
