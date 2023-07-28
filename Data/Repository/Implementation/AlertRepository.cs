@@ -1,5 +1,4 @@
 ﻿using EpiConnectAPI.Core.Model;
-using EpiConnectAPI.Core.ViewModel;
 using EpiConnectAPI.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +27,7 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
                          };
             return await result.ToListAsync();
         }
+
 
         public async Task<Alert> GetLastAlertByEpiId(int epiId) {
             return await _context.Alerts

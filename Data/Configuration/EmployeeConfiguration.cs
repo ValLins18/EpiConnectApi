@@ -12,7 +12,6 @@ namespace EpiConnectAPI.Data.Configuration {
             builder.Property(e => e.Name).HasColumnName(nameof(Employee.Name)).HasMaxLength(50).IsRequired();
             builder.Property(e => e.AddressId).HasColumnName(nameof(Employee.AddressId));
             builder.Property(e => e.PhoneId).HasColumnName(nameof(Employee.PhoneId));
-            builder.Property(e => e.WorkShift).HasColumnName(nameof(Employee.WorkShift)).HasMaxLength(10).IsRequired();
             builder.Property(e => e.PostId).HasColumnName(nameof(Employee.PostId));
             builder.Property(e => e.BirthDate).HasColumnName(nameof(Employee.BirthDate));
             builder.Property(e => e.EntryDate).HasColumnName(nameof(Employee.EntryDate));
