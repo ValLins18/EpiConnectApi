@@ -17,11 +17,16 @@ namespace EpiConnectAPI.Data.Repository.Implementation {
             return alert;
         }
 
-        public Task<List<WorkshiftAlertsView>> GetAlertsCountByWorkshift() {
-            throw new NotImplementedException();
-            //var result = from em in _context.Employees
-            //             join e in _context.Epis on em.PersonId equals e.EmployeeId into e+
-            //             join a in _context.Alerts on e.
+        public async Task<List<WorkshiftAlertsView>> GetAlertsCountByWorkshift() {
+            var result = from em in _context.Employees
+                         join e in _context.Epis on em.PersonId equals e.EmployeeId
+                         join a in _context.Alerts on e.EpiId equals a.EpiId
+                         group a by em.WorkShift into g
+                         select new WorkshiftAlertsView {
+                             WorkshiftName = g.Key,
+                             AlertCount = g.Count(a => a != null)
+                         };
+            return await result.ToListAsync();
         }
 
         public async Task<Alert> GetLastAlertByEpiId(int epiId) {
