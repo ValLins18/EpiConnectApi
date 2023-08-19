@@ -34,6 +34,7 @@ namespace EpiConnectAPI.Data.Repository.Implementation
         public async Task<Alert> GetLastAlertByEpiId(int epiId) {
             return await _context.Alerts
                 .Include(a => a.Metrics)
+                .Where(a => a.IsOpen)
                 .OrderByDescending(a => a.AlertDate).AsNoTracking()
                 .FirstOrDefaultAsync(a => a.EpiId == epiId);
         }

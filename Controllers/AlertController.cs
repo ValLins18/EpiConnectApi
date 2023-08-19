@@ -27,10 +27,15 @@ namespace EpiConnectAPI.Controllers {
         [AllowAnonymous]
         [HttpPost("/abrirAlerta")]
         public async Task<IActionResult> AbrirAlerta([FromBody] AlertRequestView alertRequest) {
-            Alert alert = _mapper.Map<Alert>(alertRequest);
-            alert.AlertDate = DateTime.Now;
-            await _alertRepository.OpenAlert(alert);
-            return Created("", alert);
+            Alert OpenedAlert = await _alertRepository.GetLastAlertByEpiId(alertRequest.EpiId);
+            //Se já tiver alerta aberto ele só manda uma mensagem de sucesso sem conteudo e não abre um novo alerta.
+            if (OpenedAlert != null) {
+                return NoContent();
+            }
+            Alert alertDto = _mapper.Map<Alert>(alertRequest);
+            alertDto.AlertDate = DateTime.Now;
+            await _alertRepository.OpenAlert(alertDto);
+            return Created("", alertDto);
         }
 
         // PUT api/<AlertController>/5+
@@ -38,19 +43,22 @@ namespace EpiConnectAPI.Controllers {
         [HttpPut("/fecharAlerta/{EpiId}")]
         public async Task<IActionResult> FecharAlerta(int EpiId) {
             Alert OpenedAlert = await _alertRepository.GetLastAlertByEpiId(EpiId);
-            OpenedAlert.UnprotectedTime = DateTime.Now - OpenedAlert.AlertDate;
-            OpenedAlert.IsOpen = false;
+            if (OpenedAlert != null) {
+                OpenedAlert.UnprotectedTime = DateTime.Now - OpenedAlert.AlertDate;
+                OpenedAlert.IsOpen = false;
 
-            //TODO Regra que define Nivel de periculosidade(dangerousLevel)
+                //TODO Regra que define Nivel de periculosidade(dangerousLevel)
 
-            OpenedAlert.DangerousLevel = DangerousLevel.LOW;
+                OpenedAlert.DangerousLevel = DangerousLevel.LOW;
 
-            await _alertRepository.CloseAlert(EpiId, OpenedAlert);
-            return Ok(new {
-                OpenedAlert.UnprotectedTime,
-                OpenedAlert.IsOpen,
-                DangerousLevel = OpenedAlert.DangerousLevel.ToString()
-            });
+                await _alertRepository.CloseAlert(EpiId, OpenedAlert);
+                return Ok(new {
+                    OpenedAlert.UnprotectedTime,
+                    OpenedAlert.IsOpen,
+                    DangerousLevel = OpenedAlert.DangerousLevel.ToString()
+                });
+            }
+            return NoContent();
         }
     }
 }
